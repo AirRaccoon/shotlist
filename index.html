@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shotlist BMW M5 — Aérodrome</title>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --text: #f0f0f0;
+    --muted: #777;
+    --blue: #4a9eff;
+    --blue-bg: #0e1e35;
+    --purple: #9b8fff;
+    --purple-bg: #1a1730;
+    --green: #4ecb7a;
+    --green-bg: #0e2a1a;
+    --amber: #f0a940;
+    --amber-bg: #2a1e0a;
+    --red: #f06060;
+    --red-bg: #2a0e0e;
+    --teal: #3ecfb0;
+    --teal-bg: #0a2420;
+    --check-done: #4ecb7a;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 0 0 80px;
+  }
+
+  /* HEADER */
+  .hero {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 16px 16px;
+  }
+  .hero-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hero-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .hero-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .stat {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+  .stat-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    padding: 12px 16px 0;
+  }
+  .progress-bar-track {
+    background: var(--surface2);
+    border-radius: 99px;
+    height: 4px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 99px;
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  /* PHASE */
+  .phase {
+    margin-top: 20px;
+    padding: 0 12px;
+  }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+  .phase-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 2px 8px;
+    border-radius: 99px;
+    text-transform: uppercase;
+  }
+  .phase-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    flex: 1;
+  }
+  .phase-time {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* SCENARIO BANNER */
+  .scenario-banner {
+    border-radius: var(--radius-sm);
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  /* SHOT CARD */
+  .shot {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    transition: border-color 0.2s;
+  }
+  .shot.done {
+    border-color: var(--check-done);
+    opacity: 0.6;
+  }
+  .shot-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 6px;
+  }
+  .shot-check {
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--border);
+    border-radius: 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    background: transparent;
+  }
+  .shot.done .shot-check {
+    background: var(--check-done);
+    border-color: var(--check-done);
+  }
+  .shot-check svg {
+    display: none;
+    width: 13px;
+    height: 13px;
+  }
+  .shot.done .shot-check svg {
+    display: block;
+  }
+  .shot-meta {
+    flex: 1;
+  }
+  .shot-num {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .shot-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .shot-dur {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .shot-desc {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.55;
+    margin-bottom: 8px;
+    padding-left: 32px;
+  }
+
+  /* TAGS */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    padding-left: 32px;
+    margin-bottom: 8px;
+  }
+  .tag {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 7px;
+    border-radius: 99px;
+    border: 1px solid;
+  }
+  .tag-cam  { color: var(--blue);   border-color: #1a3a6a; background: #0a1828; }
+  .tag-fpv  { color: var(--purple); border-color: #2e2860; background: #120f2a; }
+  .tag-drone{ color: var(--green);  border-color: #1a4030; background: #081a10; }
+  .tag-op   { color: var(--amber);  border-color: #4a3010; background: #1a1005; }
+
+  /* DETAIL BLOCK */
+  .detail {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    margin: 0 0 8px 32px;
+  }
+  .detail-row {
+    display: flex;
+    gap: 8px;
+    font-size: 12px;
+    padding: 3px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.4;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-key {
+    color: var(--muted);
+    min-width: 80px;
+    flex-shrink: 0;
+    font-size: 11px;
+  }
+  .detail-val { color: var(--text); }
+
+  /* CHECKLIST ITEMS */
+  .checklist {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    margin: 0 0 8px 32px;
+  }
+  .checklist-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cl-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    line-height: 1.4;
+  }
+  .cl-item:last-child { border-bottom: none; }
+  .cl-box {
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .cl-call {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--purple);
+    background: var(--purple-bg);
+    padding: 1px 6px;
+    border-radius: 4px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cl-desc { color: #aaa; }
+
+  /* TIPS & WARNINGS */
+  .tip, .warn {
+    border-radius: var(--radius-sm);
+    padding: 8px 10px;
+    margin: 0 0 8px 32px;
+    font-size: 12px;
+    line-height: 1.5;
+    display: flex;
+    gap: 7px;
+    align-items: flex-start;
+  }
+  .tip  { background: var(--blue-bg);  color: #7bb8ff; border: 1px solid #1a3a6a; }
+  .warn { background: var(--amber-bg); color: #f0b860; border: 1px solid #4a3010; }
+  .tip-icon, .warn-icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* DIVIDER */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 12px;
+  }
+
+  /* RESET BTN */
+  .reset-btn {
+    display: block;
+    margin: 16px auto 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--muted);
+    font-size: 12px;
+    padding: 6px 16px;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Quetzal Horizon × Hess BMW</div>
+  <div class="hero-title">BMW M5 2025<br>Shotlist aérodrome</div>
+  <div class="hero-sub">Concept 9 — "Autorisation de décollage"</div>
+  <div class="stats">
+    <div class="stat"><div class="stat-val">14+</div><div class="stat-label">Plans</div></div>
+    <div class="stat"><div class="stat-val">5</div><div class="stat-label">Phases</div></div>
+    <div class="stat"><div class="stat-val">~4h</div><div class="stat-label">Tournage</div></div>
+    <div class="stat"><div class="stat-val">2</div><div class="stat-label">Opérateurs</div></div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <div class="progress-bar-track">
+    <div class="progress-bar-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 plan coché</div>
+</div>
+
+<!-- PHASE 1 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-badge" style="background:#0e1e35;color:#4a9eff;">Phase 1</div>
+    <div class="phase-name">Tour de contrôle</div>
+    <div class="phase-time">~20 min</div>
+  </div>
+
+  <div class="shot" id="s01">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s01')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 01</div>
+        <div class="shot-title">Extérieur tour — montée drone</div>
+      </div>
+      <div class="shot-dur">5–7 s</div>
+    </div>
+    <div class="shot-desc">Mavic 3 démarre au sol, remonte le long de la tour jusqu'au sommet. Plan d'ouverture qui pose l'univers aviation avant que la M5 entre en scène.</div>
+    <div class="tags"><span class="tag tag-drone">Mavic 3</span><span class="tag tag-op">Op. 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Montée verticale lente, stable</div></div>
+      <div class="detail-row"><div class="detail-key">Cadrage</div><div class="detail-val">Commencer au pied, finir sur le sommet + horizon</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 2 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-badge" style="background:#1a1730;color:#9b8fff;">Phase 2</div>
+    <div class="phase-name">Checklist dans le hangar</div>
+    <div class="phase-time">~1 h 15</div>
+  </div>
+
+  <div class="shot" id="s02">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s02')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 02</div>
+        <div class="shot-title">Plan large d'ouverture — M5 dans le hangar</div>
+      </div>
+      <div class="shot-dur">6–8 s</div>
+    </div>
+    <div class="shot-desc">FX30 sur trépied, M5 seule dans la pénombre, une source lumière latérale qui accroche la carrosserie. Plan contemplatif, silence.</div>
+    <div class="tags"><span class="tag tag-cam">FX30 trépied</span><span class="tag tag-op">Op. 1</span></div>
+  </div>
+
+  <div class="shot" id="s03">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s03')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 03</div>
+        <div class="shot-title">Checklist pré-départ — 6 items</div>
+      </div>
+      <div class="shot-dur">2–3 s / plan</div>
+    </div>
+    <div class="shot-desc">Chaque item = un plan macro. Voix TC égrène les items, le plan répond visuellement. FX30 + Osmo P3.</div>
+    <div class="tags"><span class="tag tag-cam">FX30 + Osmo P3</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="checklist">
+      <div class="checklist-label">Items — ordre de tournage</div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"EXTÉRIEUR... CHECK"</div><div class="cl-desc">Calandre M + phares laser allumés — rack focus lent</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"IDENTIFICATION... CHECK"</div><div class="cl-desc">Badge M5 sur aile + logo Competition sur coffre — glissé Osmo</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"FREINAGE... CHECK"</div><div class="cl-desc">Étrier rouge M à travers la jante, disque carbone — FX30 ras sol</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"COCKPIT... CHECK"</div><div class="cl-desc">Siège M → volant flatbottom → palette + écran mode Track — 3 plans</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"PNEUMATIQUES... CHECK"</div><div class="cl-desc">Flanc arrière large + gomme écrasée au sol — profondeur de champ</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"PROPULSION... CHECK"</div><div class="cl-desc">4 sorties échappement au démarrage — fumée froide + son V8 capté</div></div>
+    </div>
+    <div class="tip"><div class="tip-icon">💡</div><div>Plan "PROPULSION CHECK" en dernier — c'est le climax de la checklist et le déclencheur naturel vers la sortie du hangar.</div></div>
+  </div>
+
+  <div class="shot" id="s04">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s04')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 04</div>
+        <div class="shot-title">Drone zénithal — clôture hangar</div>
+      </div>
+      <div class="shot-dur">5 s</div>
+    </div>
+    <div class="shot-desc">Mavic 3 en plongée totale depuis le plafond, M5 moteur allumé vue du dessus. Transition vers la sortie. Vérifier hauteur sous plafond à l'avance.</div>
+    <div class="tags"><span class="tag tag-drone">Mavic 3</span><span class="tag tag-op">Op. 2</span></div>
+  </div>
+</div>
+
+<!-- PHASE 3 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-badge" style="background:#0e2a1a;color:#4ecb7a;">Phase 3</div>
+    <div class="phase-name">Sortie du hangar</div>
+    <div class="phase-time">~35 min</div>
+  </div>
+
+  <div class="shot" id="s05">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s05')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 05</div>
+        <div class="shot-title">Face avant — sortie lente vers l'objectif</div>
+      </div>
+      <div class="shot-dur">6–8 s</div>
+    </div>
+    <div class="shot-desc">FX30 trépied bas à l'extérieur dans l'axe des portes. M5 sort vers la caméra phares allumés. Obscurité hangar → lumière jour. La voiture "naît".</div>
+    <div class="tags"><span class="tag tag-cam">FX30 trépied bas</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Cadrage</div><div class="detail-val">Axe central, trépied à 40–50 cm du sol</div></div>
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Fixe — c'est la voiture qui bouge</div></div>
+      <div class="detail-row"><div class="detail-key">Vitesse M5</div><div class="detail-val">3–5 km/h max, stopper à 2 m de l'objectif</div></div>
+      <div class="detail-row"><div class="detail-key">Expo</div><div class="detail-val">Exposer sur l'extérieur — intérieur hangar sombre naturellement</div></div>
+      <div class="detail-row"><div class="detail-key">Son</div><div class="detail-val">Grondement V8 au ralenti — capter au micro directionnel</div></div>
+    </div>
+    <div class="tip"><div class="tip-icon">💡</div><div>Plans 05 et 07 utilisent le même mouvement de la M5. Tourner les deux sur la même passe : FX30 fixe devant, Avata en FPV derrière.</div></div>
+  </div>
+
+  <div class="shot" id="s06">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s06')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 06</div>
+        <div class="shot-title">Drone zénithal — révélation de l'aérodrome</div>
+      </div>
+      <div class="shot-dur">6–8 s</div>
+    </div>
+    <div class="shot-desc">Mavic 3 en hauteur. La M5 apparaît depuis le bas du cadre, s'avance sur l'aire. Première révélation de l'échelle de l'aérodrome.</div>
+    <div class="tags"><span class="tag tag-drone">Mavic 3</span><span class="tag tag-op">Op. 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Hauteur</div><div class="detail-val">30–50 m, plongée 80–90°</div></div>
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Léger recul lent pendant la sortie</div></div>
+      <div class="detail-row"><div class="detail-key">Timing</div><div class="detail-val">Déclencher 3 s avant la sortie de la M5</div></div>
+      <div class="detail-row"><div class="detail-key">À éviter</div><div class="detail-val">Pas de mouvement latéral — la symétrie est le sujet</div></div>
+    </div>
+  </div>
+
+  <div class="shot" id="s07">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s07')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 07</div>
+        <div class="shot-title">FPV — passage de porte, intérieur → extérieur</div>
+      </div>
+      <div class="shot-dur">5–7 s</div>
+    </div>
+    <div class="shot-desc">Avata 2 part de l'intérieur sombre, passe à travers les portes ouvertes, ressort dans la lumière. L'auto-expo crée un éblouissement progressif au passage — effet cinéma obtenu gratuitement.</div>
+    <div class="tags"><span class="tag tag-fpv">Avata 2</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Expo</div><div class="detail-val">Mode auto — l'Avata gère le passage sombre → lumineux. ND adapté à l'extérieur.</div></div>
+      <div class="detail-row"><div class="detail-key">Position départ</div><div class="detail-val">Côté droit du hangar, ne pas gêner la voiture</div></div>
+      <div class="detail-row"><div class="detail-key">Trajectoire</div><div class="detail-val">Montée progressive, passage porte en légère diagonale, alignement derrière M5</div></div>
+      <div class="detail-row"><div class="detail-key">Vitesse</div><div class="detail-val">Modérée à l'intérieur, accélération une fois les portes passées</div></div>
+      <div class="detail-row"><div class="detail-key">Passes</div><div class="detail-val">3–4 passes minimum</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 4 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-badge" style="background:#2a1e0a;color:#f0a940;">Phase 4</div>
+    <div class="phase-name">Checklist taxiway + mise en position</div>
+    <div class="phase-time">~20 min</div>
+  </div>
+
+  <div class="shot" id="s08">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s08')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 08</div>
+        <div class="shot-title">Plan large — M5 à l'arrêt début taxiway</div>
+      </div>
+      <div class="shot-dur">4–5 s</div>
+    </div>
+    <div class="shot-desc">FX30 à distance, M5 seule sur le taxiway, moteur allumé. Marquages jaunes et balisage visibles. Plan fixe, tension avant la checklist finale. Audio TC : "M5, en attente de votre checklist finale."</div>
+    <div class="tags"><span class="tag tag-cam">FX30 trépied</span><span class="tag tag-op">Op. 2</span></div>
+  </div>
+
+  <div class="shot" id="s09">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('s09')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan 09</div>
+        <div class="shot-title">Checklist courte — cockpit taxiway</div>
+      </div>
+      <div class="shot-dur">2 s / plan</div>
+    </div>
+    <div class="shot-desc">3 plans intérieur enchaînés en cut rapide. Plus nerveux que la checklist hangar — on est sur le point de partir.</div>
+    <div class="tags"><span class="tag tag-cam">FX30 + Osmo P3</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="checklist">
+      <div class="checklist-label">3 items — rythme rapide</div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"MODE... CHECK"</div><div class="cl-desc">Doigt sélectionne mode M Sport — écran bascule</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"LAUNCH... ARMÉ"</div><div class="cl-desc">Procédure launch control sur le volant (frein + gaz)</div></div>
+      <div class="cl-item"><div class="cl-box"></div><div class="cl-call">"PILOTE... PRÊT"</div><div class="cl-desc">Regard conducteur droit devant — dernier plan avant l'action</div></div>
+    </div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Son</div><div class="detail-val">V8 qui monte en régime entre chaque item — tension progressive</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PHASE 5 -->
+<div class="phase">
+  <div class="phase-header">
+    <div class="phase-badge" style="background:#2a0e0e;color:#f06060;">Phase 5</div>
+    <div class="phase-name">Action — deux scénarios</div>
+    <div class="phase-time">A: ~25 min / B: ~1h10</div>
+  </div>
+
+  <!-- ORBIT COMMUN -->
+  <div class="shot" id="sA0">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sA0')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan A0 — Commun</div>
+        <div class="shot-title">FPV orbit — roulage vers le point de départ</div>
+      </div>
+      <div class="shot-dur">8–12 s</div>
+    </div>
+    <div class="shot-desc">Avata 2 orbit continu autour de la M5 pendant qu'elle roule vers son point de départ. Plan de respiration avant l'explosion. Vitesse faible → orbit confortable.</div>
+    <div class="tags"><span class="tag tag-fpv">Avata 2</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Rayon orbit</div><div class="detail-val">6–8 m autour de la voiture, hauteur 3–5 m</div></div>
+      <div class="detail-row"><div class="detail-key">Sens</div><div class="detail-val">Commence face avant, finit face arrière quand la voiture s'arrête</div></div>
+      <div class="detail-row"><div class="detail-key">Durée utile</div><div class="detail-val">~270° d'orbit suffisent</div></div>
+    </div>
+    <div class="tip"><div class="tip-icon">💡</div><div>Profiter de ce roulage pour chauffer les moteurs et armer le launch control.</div></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SCENARIO A -->
+  <div class="scenario-banner" style="background:#0e1e35;color:#4a9eff;border:1px solid #1a3a6a;">
+    Scénario A — Taxiway uniquement (accès piste non obtenu)
+  </div>
+
+  <div class="shot" id="sA1">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sA1')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan A1</div>
+        <div class="shot-title">FPV frontal — M5 fonce vers le drone</div>
+      </div>
+      <div class="shot-dur">5–7 s</div>
+    </div>
+    <div class="shot-desc">Avata fixe dans l'axe à 40–50 m, hauteur calandre (1–1,5 m). Au launch, la M5 fonce droit vers le drone. La voiture grossit dans le cadre à toute vitesse puis passe dessous au dernier moment. C'est la vitesse de la M5 qui fait le plan, pas celle du drone.</div>
+    <div class="tags"><span class="tag tag-fpv">Avata 2</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Position drone</div><div class="detail-val">Dans l'axe, face à la M5, 40–50 m devant, hauteur 1–1,5 m</div></div>
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Quasi fixe ou léger recul lent</div></div>
+      <div class="detail-row"><div class="detail-key">Passage</div><div class="detail-val">Pull-up à 2–3 m au dernier moment pour laisser passer la voiture</div></div>
+      <div class="detail-row"><div class="detail-key">Après passage</div><div class="detail-val">Retourner le drone — filmer l'arrière de la M5 qui s'éloigne</div></div>
+      <div class="detail-row"><div class="detail-key">Passes</div><div class="detail-val">3–4 passes minimum</div></div>
+    </div>
+    <div class="warn"><div class="warn-icon">⚠️</div><div>Signal radio convenu avant chaque launch. Le conducteur ne démarre pas sans confirmation que le drone est en position et à la bonne hauteur.</div></div>
+  </div>
+
+  <div class="shot" id="sA2">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sA2')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan A2</div>
+        <div class="shot-title">FX30 latéral — launch de côté</div>
+      </div>
+      <div class="shot-dur">6–8 s</div>
+    </div>
+    <div class="shot-desc">FX30 sur trépied latéral à distance de sécurité. Plan large qui montre la voiture entière au launch — fumée de pneus, accélération, V8. Plan iconique.</div>
+    <div class="tags"><span class="tag tag-cam">FX30 trépied</span><span class="tag tag-op">Op. 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Distance</div><div class="detail-val">Min. 10 m latéral — jamais dans l'axe de la voiture</div></div>
+      <div class="detail-row"><div class="detail-key">Cadrage</div><div class="detail-val">Plan large, voiture entière visible dès le départ</div></div>
+      <div class="detail-row"><div class="detail-key">Frame rate</div><div class="detail-val">120 fps si possible pour la fumée de pneus au départ</div></div>
+    </div>
+  </div>
+
+  <div class="shot" id="sA3">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sA3')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan A3</div>
+        <div class="shot-title">Mavic zénithal — launch vu du dessus</div>
+      </div>
+      <div class="shot-dur">6 s</div>
+    </div>
+    <div class="shot-desc">Vue du dessus au moment du launch — traces de pneus, fumée, voiture qui disparaît du cadre. Plan de climax final scénario A.</div>
+    <div class="tags"><span class="tag tag-drone">Mavic 3</span><span class="tag tag-op">Op. 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Hauteur</div><div class="detail-val">40–60 m, plongée totale</div></div>
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Drone fixe — laisser la voiture sortir du cadre</div></div>
+    </div>
+    <div class="tip"><div class="tip-icon">💡</div><div>Plans A2 et A3 simultanés sur la même passe — Op. 2 gère Mavic, FX30 tourne en autonome sur trépied.</div></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- SCENARIO B -->
+  <div class="scenario-banner" style="background:#0e2a1a;color:#4ecb7a;border:1px solid #1a4030;">
+    Scénario B — Accès piste complet (si obtenu)
+  </div>
+  <div class="warn" style="margin: 0 0 8px;"><div class="warn-icon">⚠️</div><div>Piste fermée à tout trafic pendant le tournage (~45 min à 1 h). Coordinateur sur place obligatoire.</div></div>
+
+  <div class="shot" id="sB1">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sB1')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan B1</div>
+        <div class="shot-title">FPV poursuite latérale — roulage piste</div>
+      </div>
+      <div class="shot-dur">8–10 s</div>
+    </div>
+    <div class="shot-desc">Avata suit la M5 en roulage lent depuis le taxiway jusqu'au seuil. Poursuite côté gauche, légère inclinaison, hauteur 3–4 m.</div>
+    <div class="tags"><span class="tag tag-fpv">Avata 2</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Vitesse M5</div><div class="detail-val">20–30 km/h max</div></div>
+    </div>
+  </div>
+
+  <div class="shot" id="sB2">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sB2')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan B2</div>
+        <div class="shot-title">Mavic zénithal — roulage full piste</div>
+      </div>
+      <div class="shot-dur">10–12 s</div>
+    </div>
+    <div class="shot-desc">Vue du dessus, la M5 remonte toute la longueur de la piste. La voiture seule sur une piste d'aérodrome — visuellement unique.</div>
+    <div class="tags"><span class="tag tag-drone">Mavic 3</span><span class="tag tag-op">Op. 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Hauteur</div><div class="detail-val">60–80 m pour voir la piste entière</div></div>
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Léger recul lent avec la voiture</div></div>
+    </div>
+  </div>
+
+  <div class="shot" id="sB3">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sB3')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan B3</div>
+        <div class="shot-title">Plan fixe — alignement au seuil de piste</div>
+      </div>
+      <div class="shot-dur">5–6 s</div>
+    </div>
+    <div class="shot-desc">FX30 dans l'axe de piste, 80–100 m devant le seuil, trépied très bas. La M5 s'aligne au seuil — comme un avion en place. Piste qui s'étend à l'infini. Plan le plus fort visuellement de toute la shotlist.</div>
+    <div class="tags"><span class="tag tag-cam">FX30 trépied bas</span><span class="tag tag-op">Op. 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Position</div><div class="detail-val">Dans l'axe de piste, 80–100 m devant le seuil</div></div>
+      <div class="detail-row"><div class="detail-key">Cadrage</div><div class="detail-val">M5 centrée en bas, piste et ciel au-dessus — lignes de fuite max</div></div>
+      <div class="detail-row"><div class="detail-key">Mouvement</div><div class="detail-val">Fixe absolu — la symétrie est le sujet</div></div>
+      <div class="detail-row"><div class="detail-key">Son</div><div class="detail-val">V8 au ralenti dans le silence de la piste — capter proprement</div></div>
+    </div>
+  </div>
+
+  <div class="shot" id="sB4">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sB4')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan B4</div>
+        <div class="shot-title">FPV dive — tension maximale au seuil</div>
+      </div>
+      <div class="shot-dur">4–5 s</div>
+    </div>
+    <div class="shot-desc">Avata en hauteur dans l'axe, pique vers la face avant de la M5 immobile au seuil, remonte au dernier moment. Terminer le dive au moment où la voix TC dit "autorisée au décollage".</div>
+    <div class="tags"><span class="tag tag-fpv">Avata 2</span><span class="tag tag-op">Op. 1</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">Trajectoire</div><div class="detail-val">Départ 30 m de hauteur dans l'axe, dive vers la calandre, pull up à 2–3 m</div></div>
+      <div class="detail-row"><div class="detail-key">Timing</div><div class="detail-val">Finir le dive exactement sur "autorisée au décollage"</div></div>
+    </div>
+  </div>
+
+  <div class="shot" id="sB5">
+    <div class="shot-top">
+      <div class="shot-check" onclick="toggle('sB5')">
+        <svg viewBox="0 0 13 10" fill="none"><polyline points="1,5 5,9 12,1" stroke="#0d0d0d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="shot-meta">
+        <div class="shot-num">Plan B5</div>
+        <div class="shot-title">Launch control — 3 angles simultanés</div>
+      </div>
+      <div class="shot-dur">Plan final</div>
+    </div>
+    <div class="shot-desc">Climax absolu. FX30 latéral capte le launch (fumée, son, accélération). Avata en poursuite derrière. Mavic zénithal. La M5 disparaît au bout de la piste. Cut noir. Fin.</div>
+    <div class="tags"><span class="tag tag-cam">FX30 latéral</span><span class="tag tag-fpv">Avata 2</span><span class="tag tag-drone">Mavic 3</span><span class="tag tag-op">Op. 1 + 2</span></div>
+    <div class="detail">
+      <div class="detail-row"><div class="detail-key">FX30</div><div class="detail-val">Trépied latéral, 120 fps si possible pour la fumée</div></div>
+      <div class="detail-row"><div class="detail-key">Avata 2</div><div class="detail-val">Poursuite derrière, départ synchronisé avec la voiture</div></div>
+      <div class="detail-row"><div class="detail-key">Mavic 3</div><div class="detail-val">Zénithal fixe — voiture traverse et disparaît du cadre</div></div>
+    </div>
+    <div class="tip"><div class="tip-icon">💡</div><div>Op. 2 gère Mavic + FX30 en trépied autonome. Op. 1 est 100% concentré sur l'Avata.</div></div>
+  </div>
+
+</div>
+
+<button class="reset-btn" onclick="resetAll()">Réinitialiser les cases</button>
+
+<script>
+  const STORAGE_KEY = 'shotlist_m5_v1';
+
+  function getState() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch(e) { return {}; }
+  }
+  function saveState(state) {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
+
+  function toggle(id) {
+    const el = document.getElementById(id);
+    const state = getState();
+    const isDone = el.classList.contains('done');
+    if (isDone) {
+      el.classList.remove('done');
+      delete state[id];
+    } else {
+      el.classList.add('done');
+      state[id] = true;
+    }
+    saveState(state);
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.shot');
+    const done = document.querySelectorAll('.shot.done');
+    const pct = all.length ? Math.round((done.length / all.length) * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = done.length + ' / ' + all.length + ' plans cochés';
+  }
+
+  function resetAll() {
+    if (!confirm('Réinitialiser toutes les cases ?')) return;
+    document.querySelectorAll('.shot').forEach(el => el.classList.remove('done'));
+    saveState({});
+    updateProgress();
+  }
+
+  function restoreState() {
+    const state = getState();
+    Object.keys(state).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('done');
+    });
+    updateProgress();
+  }
+
+  restoreState();
+</script>
+</body>
+</html>
